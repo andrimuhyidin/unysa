@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, make_response, request
-from TestScap import *
+from scrap import *
 import json
 
 app = Flask(__name__)
