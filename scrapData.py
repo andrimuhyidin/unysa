@@ -59,7 +59,7 @@ class scrapUKT:
             7:df['UKT. VII'].tolist()
         }
         prodiTemp.append(prodi)
-        for i in range(1,7):
+        for i in range(1,8):
                 uktTemp[i].append(ukt[i])
     for i in prodiTemp:
             for j in i:
@@ -68,3 +68,11 @@ class scrapUKT:
             for j in uktTemp[i]:
                     for x in j:
                             uktData[i].append(x)
+
+class scrapBeasiswa:
+    url = requests.get('http://pmb.uny.ac.id/beasiswa')
+    soup = BeautifulSoup(url.content, 'html.parser')
+    listBeasiswa = soup.find('div',{'property':'schema:text'}).find_all('li')
+    dataBeasiswa = []
+    for tag in listBeasiswa:
+        dataBeasiswa.append(tag.text)

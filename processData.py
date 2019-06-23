@@ -2,7 +2,7 @@ from flask import request
 from scrapData import *
 from answerData import (
     AKREDITASI,GAGAL,
-    UKT,UKT_PENGANTAR,UKTLIST,UKT1
+    UKT,UKT1,UKT_PENGANTAR, UKT_ONLYNUMB
     )
 import random, json
 
@@ -17,7 +17,7 @@ def processRequest(req):
     for key in entity_key:
         entity_type.append(key)
         entity_value.append(entity_key[key])
-        
+
     # Create respons for user who ask about 'akreditasi prodi' 
     if intent == "Program Studi":
         if "program_studi" in entity_type:
@@ -31,53 +31,52 @@ def processRequest(req):
                     )
                 else:
                     speech = random.choice(GAGAL)
-    # Create respons for user who ask about 'UKT Only'
+
     elif intent == "UKT":
-        if "biaya" in entity_type:
-            if "UKT" in entity_value:
-                speech = random.choice(UKT_PENGANTAR)
-            else:
-                speech = random.choice(GAGAL)
-    # Create respons for user who ask about 'UKT on List'
-    elif intent in UKTLIST:
+        # Run scrapUKT
         scrapUKT()
-        if "program_studi" in entity_type:
-            entity_value_split_list = []
-            for entity_value_item in entity_value:
-                entity_value_split = str(entity_value_item).split(' -')[0]
-                entity_value_split_list.append(entity_value_split)
-            
-            for entity_value_split_list_item in entity_value_split_list:
-                if entity_value_split_list_item in prodiUKT:
-                    index = prodiUKT.index(entity_value_split_list_item)
-                    # Special for UKT 1 because minus 00
-                    if intent == UKTLIST[0]:
-                        speech = f"yeah ini UKT 1"
-                        # speech = random.choice(UKT1).format(
-                        # ukt=uktData[int(intent[-1:])][index],
-                        # uktIndex=intent[-1:],
-                        # prodi=entity_value_item
-                        # )
-                    # Next UKT
-                    else:
-                        speech = "ini ukt 2"
-                        # speech = f"yeah ini {uktData[int(intent[-1:])][index]}"
-                        # speech = random.choice(UKT).format(
-                        #     ukt=uktData[int(intent[-1:])][index],
-                        #     uktIndex=intent[-1:],
-                        #     prodi=entity_value_item
-                        #     )
-                else:
-                    speech = f"hai {intent} ini {UKTLIST[0]}"
-                    # speech = random.choice(GAGAL)
-    # If you failed
+        # Get Prodi entity
+        entity_value_prodi = ''
+        for entity_value_item in entity_value:
+            entity_value_split = str(entity_value_item).split(' -')[0]
+            if entity_value_split in prodiUKT:
+                entity_value_prodi = entity_value_split
+        # Get Number
+        entity_value_number = ''
+        for entity_value_item in entity_value:
+            if entity_value_item in range(1,8):
+                entity_value_number = entity_value_item
+        
+        # Only UKT but error
+        if 'biaya' in entity_type:
+            if 'UKT' in entity_value:
+                speech = random.choice(UKT_PENGANTAR)
+                # With Number
+                if entity_value_number in entity_value:
+                    speech = random.choice(UKT_ONLYNUMB)
+                    # With prodi
+                    if entity_value_prodi in prodiUKT:
+                        index = prodiUKT.index(entity_value_prodi)
+                        # UKT 1
+                        if entity_value_number == 1:
+                            speech = random.choice(UKT1).format(
+                                ukt=uktData[entity_value_number][index],
+                                uktIndex=int(entity_value_number),
+                                prodi=prodiUKT[index]
+                                )
+                        # Except UKT 1
+                        else:
+                            speech = random.choice(UKT).format(
+                                ukt=uktData[entity_value_number][index],
+                                uktIndex=int(entity_value_number),
+                                prodi=prodiUKT[index]
+                                )
     else:
-        speech = f"yah {entity_type} {entity_value}"
-        # speech = random.choice(GAGAL)
+        speech = random.choice(GAGAL)
     res = results(speech)
     return res
 
-# POST to dialogflow as json
+# Post to Dialogflow
 def results(speech):
     return {
         "fulfillmentText": speech,
