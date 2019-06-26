@@ -1,10 +1,12 @@
+import json
+import random
 from flask import request
-from scrapData import *
-from answerData import (
+from srcData.srcScrap import *
+from srcData.srcGsheet import *
+from srcData.srcLocal import (
     AKREDITASI,GAGAL,
     UKT,UKT1,UKT_PENGANTAR,UKT_INFO, UKT_PEMBAYARAN, UKT_PENURUNAN
-    )
-import random, json
+)
 
 def processRequest(req):
     # Get Dialogflow Intent and Entity
@@ -28,50 +30,83 @@ def processRequest(req):
 
     # Create respons for user who ask about 'akreditasi prodi'
     try:
+        # Prodi Intent
         if intent == "Program Studi":
+            # If user talk about only prodi
             if entity_value_prodi in prodiSplit:
                 speech = f"Baik untuk {entity_value_prodi} jenjang apa?"
+                # If user talk about jenjang
                 if entity_value_jenjang in jenjang:
                     speech = f"Baik, info apa yang anda butuhkan saat ini?"
+                    # If user talk about akreditasi
                     if 'Akreditasi' in entity_value:
                         index = prodiData.index(entity_value_prodi)
                         speech = random.choice(AKREDITASI).format(
                             index=prodiData[index],
                             akreditasi=akreditasiData[index]
                         )
-                    elif 'Animo' or 'Daya Tampung' or 'Kelompok Ujian' in entity_value:
+                    # If user talk about Animo
+                    elif ('Animo' or 'Daya Tampung' or 'Kelompok Ujian') in entity_value:
                         speech = 'Ini ada di website'
+                    # If user talk about Profil
                     elif 'Profil' in entity_value:
                         speech = 'Ini profil'
+                    # If user talk about fakultas
                     elif 'Fakultas' in entity_value:
                         speech = f"Untuk {entity_value_prodi} {entity_value_jenjang} berada di fakultas {fakultasData[index]}."
+                    # If user talk about UKT
                     elif 'UKT' in entity_value:
                         speech = "UKT Secara umum"
+                        # If user talk about UKT Number
                         if entity_value_number in entity_value:
                             speech = random.choice(UKT_INFO)
+                            # If user give description about jenjang
                             if entity_value_jenjang == 'D3':
                                 entity_value_jenjang = 'D4'
                             entity_value_prodijenjang = entity_value_prodi + " - " + entity_value_jenjang
                             if entity_value_prodijenjang in prodiJenjang:
                                 index = prodiJenjang.index(entity_value_prodijenjang)
+                                # Only for UKT 1
                                 if entity_value_number == 1:
                                     speech = random.choice(UKT1).format(
                                         ukt = uktData[entity_value_number][index],
                                         uktIndex = int(entity_value_number),
                                         prodi = prodiJenjang[index],
                                     )
+                                # Others UKT
                                 else:
                                     speech = random.choice(UKT).format(
                                         ukt = uktData[entity_value_number][index],
                                         uktIndex = int(entity_value_number),
                                         prodi = prodiJenjang[index]
                                     )
+                            # For pascasarjana
                             else:
                                 speech = f"Untuk jenjang {entity_value_jenjang} dapat diakses di"
+            # Only say UKT 
             elif 'UKT' in entity_value:
                 speech = random.choice(UKT_INFO)
+            # Default Error
             else:
                 speech = random.choice(GAGAL)
+
+        # SNMPTN
+        elif intent == 'snmptnv2':
+            if 'snmptnv2' in entity_value:
+                index = sheet_pendaftaran_value.index('snmptnv2')
+                speech = sheet_pendaftaran_answer1[index]
+                if 'pengumuman' in entity_value:
+                    index = sheet_pendaftaran_value.index('snmptnv2.pengumuman')
+                    speech = random.choice(answer)[index]
+                else:
+                    speech: "Test baen"
+            else:
+                speech = "Yah apa aja"
+        
+        # SBMPTN
+        # SM-Prestasi
+        # SM
+        # Pascasarjana
         else:
             speech = random.choice(GAGAL)
     except:
