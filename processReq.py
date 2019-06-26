@@ -89,19 +89,27 @@ def processRequest(req):
             # Default Error
             else:
                 speech = random.choice(GAGAL)
-
         # SNMPTN
-        elif intent == 'snmptnv2':
-            if 'snmptnv2' in entity_value:
-                index = sheet_pendaftaran_value.index('snmptnv2')
-                speech = sheet_pendaftaran_answer1[index]
-                if 'pengumuman' in entity_value:
-                    index = sheet_pendaftaran_value.index('snmptnv2.pengumuman')
-                    speech = random.choice(answer)[index]
-                else:
-                    speech: "Test baen"
-            else:
-                speech = "Yah apa aja"
+        elif intent == 'PendaftaranX':
+            sheet_entity_value_join = ''
+            sheet_entity_value_single = []
+            for sheet_entity_item in sheet_entity_value_split:
+                if all(element in sheet_entity_item for element in entity_value):
+                    sheet_entity_value_single.append(sheet_entity_item)
+                    sheet_entity_value_join = '.'.join(sheet_entity_item)
+            index = sheet_entity_value.index(sheet_entity_value_join)
+            speech = f"{random.choice(sheet_answer)[index]}"
+
+            # if 'snmptn' in entity_value:
+            #     index = sheet_pendaftaran_value.index('snmptn')
+            #     speech = sheet_pendaftaran_answer1[index]
+            #     if 'pengumuman' in entity_value:
+            #         index = sheet_pendaftaran_value.index('snmptnv2.pengumuman')
+            #         speech = random.choice(answer)[index]
+            #     else:
+            #         speech: "Test baen"
+            # else:
+            #     speech = "Yah apa aja"
         
         # SBMPTN
         # SM-Prestasi
@@ -119,4 +127,5 @@ def results(speech):
     return {
         "fulfillmentText": speech,
         "source":"Webhook fullfilment source"
-        }
+    }
+
