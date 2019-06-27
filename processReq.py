@@ -2,9 +2,10 @@ import json
 import random
 from itertools import permutations
 from flask import request
-from srcData.srcScrap import *
-from srcData.srcGsheet import *
-from srcData.srcLocal import (
+from src.dictFunc import *
+from src.webscrap import *
+from src.googleSheet import *
+from src.defaultLang import (
     AKREDITASI,GAGAL,
     UKT,UKT1,UKT_PENGANTAR,UKT_INFO, UKT_PEMBAYARAN, UKT_PENURUNAN
 )
@@ -84,7 +85,7 @@ def processRequest(req):
                             # For pascasarjana
                             else:
                                 speech = f"Untuk jenjang {entity_value_jenjang} dapat diakses di"
-            # Only say UKT 
+            # Only say UKT
             elif 'UKT' in entity_value:
                 speech = random.choice(UKT_INFO)
             # Default Error
@@ -93,26 +94,15 @@ def processRequest(req):
         
         # For normally answer
         elif intent.lower() in sheet_entity_intent:
-            # Filter list based on len of each elemen
-            sheet_value_filter = []
-            for elemen in sheet_entity_value_split:
-                if len(elemen) == len(entity_value):
-                    sheet_value_filter.append(elemen)
-
-            # List permutation
-            entity_value_permutation = permutations(entity_value)
-
-            # Find same data
-            for elemen in entity_value_permutation:
-                if list(elemen) in sheet_value_filter:
-                    index = sheet_entity_value_split.index(list(elemen))
-                    break
-
-            speech = random.choice(sheet_answer)[index]
-
+            # Split the list entity value in google sheet
+            result_split = split_list_value(sheet_entity_value,'.')
+            # Filter if same len between param and split result
+            result_filter = filter_list_value(entity_value,result_split)
+            # Permutation to get index for the respons
+            result_ans = ans_list_value(entity_value,result_split,result_filter,sheet_answer)
+            speech = result_ans
         else:
-            # speech = random.choice(GAGAL)
-            speech = f"Respon Gagal {intent} {sheet_entity_intent}"
+            speech = random.choice(GAGAL)
     except:
         speech = "Mohon maaf, pertanyaan anda belum bisa saya pahami atau data tidak ada dalam sistem. Coba dengan pertanyaan lain"
     res = results(speech)

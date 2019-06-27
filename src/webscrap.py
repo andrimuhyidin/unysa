@@ -29,7 +29,7 @@ class scrapAkreditasi:
             akreditasi = df['Akreditasi'].tolist() 
         fakultasTemp.append(fakultas)
         prodiTemp.append(prodi)
-        akreditasiTemp.append(akreditasi)  
+        akreditasiTemp.append(akreditasi)
     for i in fakultasTemp:
         for j in i:
             fakultasData.append(j)
