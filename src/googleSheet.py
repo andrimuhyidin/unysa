@@ -7,11 +7,11 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name('credentials.json
 gc = gspread.authorize(credentials)
 sh = gc.open_by_url("https://docs.google.com/spreadsheets/d/1gsMdyQqClto8t6rpLwxEirwghkMgalq_2rm2zUoK_bw/edit#gid=0")
 
-worksheet = sh.worksheet("ans_pendaftaran")
-sheet_entity_intent = worksheet.col_values(1)
-sheet_entity_type = worksheet.col_values(2)
-sheet_entity_value = worksheet.col_values(3)
-sheet_answer = [
+worksheet = sh.worksheet("normal_respons")
+gsheet_entity_intent = worksheet.col_values(1)
+gsheet_entity_type = worksheet.col_values(2)
+gsheet_entity_value = worksheet.col_values(3)
+gsheet_list_answer = [
     worksheet.col_values(4),
     worksheet.col_values(5),
     worksheet.col_values(6),

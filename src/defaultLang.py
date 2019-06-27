@@ -30,3 +30,7 @@ UKT_PEMBAYARAN = [
 UKT_PENURUNAN = [
     'Jika mahasiswa merasa kurang mampu membayar UKT dengan besaran yang sudah ditentukan dapat mengajukan surat permohonan keringanan pembiayaan pendidikan kepada Rektor atau Wakil rektor 2 melalui blangko yang telah disiapkan universitas. Mahasiswa wajib menyertakan bukti, alasan yang sah dan dapat diterima untuk memperkuat permohonannya. Pengajuan surat permohonan keringanan tersebut dapat dilakukan sebelum melaksanakan pembayaran semester.'
 ]
+
+EXCEPTION_DEFAULT = [
+    "Mohon maaf, pertanyaan anda belum bisa saya pahami atau data tidak ada dalam sistem. Coba dengan pertanyaan lain"
+]

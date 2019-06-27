@@ -14,9 +14,9 @@ Recuirement: must be list with a value with delimiter
 Example: andri.muhyidin
 Result: ['andri','muhyidin']
 """
-def split_list_value(list_data,delimiter):
+def gsheet_split(gsheet_entity_value,delimiter):
     result = []
-    for i in list_data:
+    for i in gsheet_entity_value:
         result.append(i.split(delimiter))
     return result
 
@@ -26,36 +26,36 @@ Recuirement: A is normal list, B is nested list
 Example: A=['andri','muhyidin'] B=[['andri'],['andri','muhyidin'],['andri','muhyidin','top']]
 Result: ['andri','muhyidin']
 """
-def filter_list_value(listA,listB):
+def gsheet_filter(entity_value,gsheet_split):
     result = []
-    for item in listB:
-        if len(item) == len(listA):
+    for item in gsheet_split:
+        if len(item) == len(entity_value):
             result.append(item)
     return result
 
 """
 Get Answer
 """
-def ans_list_value(listA,listB,listFilter,listAns):
+def gsheet_answer(entity_value,gsheet_split,gsheet_filter,gsheet_list_answer):
     result = ''
-    for item in permutations(listA):
-        if list(item) in listFilter:
-            index = listB.index(list(item))
-            result = random.choice(listAns)[index]
+    for item in permutations(entity_value):
+        if list(item) in gsheet_filter:
+            index = gsheet_split.index(list(item))
+            result = random.choice(gsheet_list_answer)[index]
             break
     return result
 
 """
 All Step
+1. Split the list entity value in google sheet
+2. Filter if same len between param and split result
+3. Permutation to get index for the respons
 """
-def gsheet_all(sheet_entity_value,delimiter,entity_value,sheet_answer):
-    # Split the list entity value in google sheet
-    result_split = split_list_value(sheet_entity_value,delimiter)
-    # Filter if same len between param and split result
-    result_filter = filter_list_value(entity_value,result_split)
-    # Permutation to get index for the respons
-    result_ans = ans_list_value(entity_value,result_split,result_filter,sheet_answer)
-    return result_ans
+def gsheet_all(entity_value,gsheet_entity_value,gsheet_list_answer):
+    result_split = gsheet_split(gsheet_entity_value,'.')
+    result_filter = gsheet_filter(entity_value,result_split)
+    speech = gsheet_answer(entity_value,result_split,result_filter,gsheet_list_answer)
+    return speech
 
 """
 Store Data as List
