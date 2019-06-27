@@ -10,6 +10,11 @@ from src.defaultLang import (
     UKT,UKT1,UKT_PENGANTAR,UKT_INFO, UKT_PEMBAYARAN, UKT_PENURUNAN
 )
 
+# Run Function
+sc_pdpt = scrap_pdpt()
+sc_ukt = scrap_ukt()
+sc_beasiswa = scrap_beasiswa()
+
 def processRequest(req):
     # Get Dialogflow Intent and Entity
     req_dict = json.loads(request.data)
@@ -23,8 +28,8 @@ def processRequest(req):
         entity_value.append(entity_key[key])
 
     # Convert intersection between param and database
-    entity_value_prodi = ''.join(set(entity_value).intersection(prodiSplit))
-    entity_value_jenjang = ''.join(set(entity_value).intersection(jenjang))
+    entity_value_prodi = ''.join(set(entity_value).intersection(sc_pdpt.prodi_split))
+    entity_value_jenjang = ''.join(set(entity_value).intersection(sc_pdpt.jenjang))
     entity_value_number = ''
     for i in entity_value:
         if i in range(1,8):
@@ -35,17 +40,17 @@ def processRequest(req):
         # Prodi Intent
         if intent == "Program Studi":
             # If user talk about only prodi
-            if entity_value_prodi in prodiSplit:
+            if entity_value_prodi in sc_pdpt.prodi_split:
                 speech = f"Baik untuk {entity_value_prodi} jenjang apa?"
                 # If user talk about jenjang
-                if entity_value_jenjang in jenjang:
+                if entity_value_jenjang in sc_pdpt.jenjang:
                     speech = f"Baik, info apa yang anda butuhkan saat ini?"
                     # If user talk about akreditasi
                     if 'Akreditasi' in entity_value:
-                        index = prodiData.index(entity_value_prodi)
+                        index = sc_pdpt.prodi.index(entity_value_prodi)
                         speech = random.choice(AKREDITASI).format(
-                            index=prodiData[index],
-                            akreditasi=akreditasiData[index]
+                            index = sc_pdpt.prodi[index],
+                            akreditasi = sc_pdpt.akreditasi[index]
                         )
                     # If user talk about Animo
                     elif ('Animo' or 'Daya Tampung' or 'Kelompok Ujian') in entity_value:
@@ -55,7 +60,7 @@ def processRequest(req):
                         speech = 'Ini profil'
                     # If user talk about fakultas
                     elif 'Fakultas' in entity_value:
-                        speech = f"Untuk {entity_value_prodi} {entity_value_jenjang} berada di fakultas {fakultasData[index]}."
+                        speech = f"Untuk {entity_value_prodi} {entity_value_jenjang} berada di fakultas {sc_pdpt.akreditasi[index]}."
                     # If user talk about UKT
                     elif 'UKT' in entity_value:
                         speech = "UKT Secara umum"
@@ -66,21 +71,21 @@ def processRequest(req):
                             if entity_value_jenjang == 'D3':
                                 entity_value_jenjang = 'D4'
                             entity_value_prodijenjang = entity_value_prodi + " - " + entity_value_jenjang
-                            if entity_value_prodijenjang in prodiJenjang:
-                                index = prodiJenjang.index(entity_value_prodijenjang)
+                            if entity_value_prodijenjang in sc_ukt.ukt_prodi_jenjang:
+                                index = sc_ukt.ukt_prodi_jenjang.index(entity_value_prodijenjang)
                                 # Only for UKT 1
                                 if entity_value_number == 1:
                                     speech = random.choice(UKT1).format(
-                                        ukt = uktData[entity_value_number][index],
+                                        ukt = sc_ukt.ukt_nilai[entity_value_number][index],
                                         uktIndex = int(entity_value_number),
-                                        prodi = prodiJenjang[index],
+                                        prodi = sc_ukt.ukt_prodi_jenjang[index],
                                     )
                                 # Others UKT
                                 else:
                                     speech = random.choice(UKT).format(
-                                        ukt = uktData[entity_value_number][index],
+                                        ukt = sc_ukt.ukt_nilai[entity_value_number][index],
                                         uktIndex = int(entity_value_number),
-                                        prodi = prodiJenjang[index]
+                                        prodi = sc_ukt.ukt_prodi_jenjang[index]
                                     )
                             # For pascasarjana
                             else:
@@ -94,13 +99,7 @@ def processRequest(req):
         
         # For normally answer
         elif intent.lower() in sheet_entity_intent:
-            # Split the list entity value in google sheet
-            result_split = split_list_value(sheet_entity_value,'.')
-            # Filter if same len between param and split result
-            result_filter = filter_list_value(entity_value,result_split)
-            # Permutation to get index for the respons
-            result_ans = ans_list_value(entity_value,result_split,result_filter,sheet_answer)
-            speech = result_ans
+            speech = gsheet_all(sheet_entity_value,'.',entity_value,sheet_answer)
         else:
             speech = random.choice(GAGAL)
     except:

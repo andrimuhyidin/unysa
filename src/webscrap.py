@@ -1,22 +1,16 @@
+from .dictFunc import *
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 
-urls = []
-jenjang = []
-jenjangUKT = []
-fakultasData = []
-prodiData = []
-prodiUKT = []
-prodiSplit = []
-prodiJenjang = []
-akreditasiData = []
-uktData = {1:[],2:[],3:[],4:[],5:[],6:[],7:[]}
+"""
+Source: PDPT UNY
+"""
+class scrap_pdpt:
+    temp_fakultas = []
+    temp_prodi = []
+    temp_akreditasi = []
 
-class scrapAkreditasi:
-    fakultasTemp = []
-    prodiTemp = []
-    akreditasiTemp = []
     for i in range(1,9):
         urls = f'http://pdpt.uny.ac.id/dtakreditasi?page={i}'.split(" ")
         for i in urls:
@@ -24,40 +18,49 @@ class scrapAkreditasi:
             soup = BeautifulSoup(url.content, 'html.parser')
             table = soup.find_all('table')
             df = pd.read_html(str(table))[0]
-            fakultas = df['Fakultas'].tolist()
-            prodi = df['Prodi'].tolist()
-            akreditasi = df['Akreditasi'].tolist() 
-        fakultasTemp.append(fakultas)
-        prodiTemp.append(prodi)
-        akreditasiTemp.append(akreditasi)
-    for i in fakultasTemp:
-        for j in i:
-            fakultasData.append(j)
-    for i in prodiTemp:
-        for j in i:
-            prodiData.append(j)
-    for i in akreditasiTemp:
-        for j in i:
-            akreditasiData.append(j)
-    for i in prodiData:
-        i_split = str(i).split(' - ')[0:]
-        prodiSplit.append(i_split[0])
-        jenjang.append(i_split[1])
-        
-class scrapUKT:
+
+            df_fakultas = df['Fakultas'].tolist()
+            df_prodi = df['Prodi'].tolist()
+            df_akreditasi = df['Akreditasi'].tolist() 
+
+        temp_fakultas.append(df_fakultas)
+        temp_prodi.append(df_prodi)
+        temp_akreditasi.append(df_akreditasi)
+
+    fakultas = convert_temp(temp_fakultas)
+    prodi = convert_temp(temp_prodi)
+    akreditasi = convert_temp(temp_akreditasi)
+    prodi_split = []
+    jenjang = []
+    for i in prodi:
+        split = str(i).split(' - ')[0:]
+        prodi_split.append(split[0])
+        jenjang.append(split[1])
+
+"""
+Source: PMB UNY
+"""
+class scrap_ukt:
+    temp_jenjang = []
+    temp_prodi = []
+    temp_ukt = {1:[],2:[],3:[],4:[],5:[],6:[],7:[]}
+
     urls = ['http://pmb.uny.ac.id/biaya-pendidikan/uang-kualiah-tunggal-ukt-program-studi-sarjana-terapan-ster',
         'http://pmb.uny.ac.id/biaya-pendidikan/uang-kuliah-tunggal-ukt-program-studi-s1']
-    jenjangTemp = []
-    prodiTemp = []
-    uktTemp = {1:[],2:[],3:[],4:[],5:[],6:[],7:[]}
+
     for i in urls:
         url = requests.get(i)
         soup = BeautifulSoup(url.content, 'html.parser')
         table = soup.find_all('table')
         df = pd.read_html(str(table),index_col=0, header=0)[0]
-        jenjang = df['JENJANG'].tolist()
-        prodi = df['PROGRAM STUDI'].tolist()
-        ukt = {
+
+        df_jenjang = df['JENJANG'].tolist()
+        temp_jenjang.append(df_jenjang)
+
+        df_prodi = df['PROGRAM STUDI'].tolist()
+        temp_prodi.append(df_prodi)
+
+        df_ukt = {
             1:df['UKT.1'].tolist(),
             2:df['UKT. II'].tolist(),
             3:df['UKT. III'].tolist(),
@@ -66,29 +69,32 @@ class scrapUKT:
             6:df['UKT. VI'].tolist(),
             7:df['UKT. VII'].tolist()
         }
-        jenjangTemp.append(jenjang)
-        prodiTemp.append(prodi)
         for i in range(1,8):
-            uktTemp[i].append(ukt[i])
-    for i in jenjangTemp:
+            temp_ukt[i].append(df_ukt[i])
+
+    ukt_prodi = convert_temp(temp_prodi)
+    
+    ukt_jenjang = []
+    for i in temp_jenjang:
         for j in i:
             if j == "Sarjana Terapan (D.IV)":
                 j = "D4"
-                jenjangUKT.append(j)
+                ukt_jenjang.append(j)
             else:
-                jenjangUKT.append(j)
-    for i in prodiTemp:
-        for j in i:
-            prodiUKT.append(j)
-    for i in range(1,8):
-        for j in uktTemp[i]:
-            for x in j:
-                uktData[i].append(x)
-    for i in range(0,len(prodiUKT)):
-        j = f"{prodiUKT[i]} - {jenjangUKT[i]}"
-        prodiJenjang.append(j)
+                ukt_jenjang.append(j)
 
-class scrapBeasiswa:
+    ukt_nilai = {1:[],2:[],3:[],4:[],5:[],6:[],7:[]}
+    for i in range(1,8):
+        for j in temp_ukt[i]:
+            for k in j:
+                ukt_nilai[i].append(k)
+
+    ukt_prodi_jenjang = []
+    for i in range(0,len(ukt_prodi)):
+        j = f"{ukt_prodi[i]} - {ukt_jenjang[i]}"
+        ukt_prodi_jenjang.append(j)
+
+class scrap_beasiswa:
     url = requests.get('http://pmb.uny.ac.id/beasiswa')
     soup = BeautifulSoup(url.content, 'html.parser')
     listBeasiswa = soup.find('div',{'property':'schema:text'}).find_all('li')

@@ -1,7 +1,6 @@
 """
 README
 """
-
 import random
 from itertools import permutations
 
@@ -35,8 +34,7 @@ def filter_list_value(listA,listB):
     return result
 
 """
-Permutation
-Get Index
+Get Answer
 """
 def ans_list_value(listA,listB,listFilter,listAns):
     result = ''
@@ -46,3 +44,25 @@ def ans_list_value(listA,listB,listFilter,listAns):
             result = random.choice(listAns)[index]
             break
     return result
+
+"""
+All Step
+"""
+def gsheet_all(sheet_entity_value,delimiter,entity_value,sheet_answer):
+    # Split the list entity value in google sheet
+    result_split = split_list_value(sheet_entity_value,delimiter)
+    # Filter if same len between param and split result
+    result_filter = filter_list_value(entity_value,result_split)
+    # Permutation to get index for the respons
+    result_ans = ans_list_value(entity_value,result_split,result_filter,sheet_answer)
+    return result_ans
+
+"""
+Store Data as List
+"""
+def convert_temp(tempData):
+    storeData = []
+    for i in tempData:
+        for j in i:
+            storeData.append(j)
+    return storeData
