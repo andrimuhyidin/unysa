@@ -1,5 +1,6 @@
 import json
 import random
+from itertools import permutations
 from flask import request
 from srcData.srcScrap import *
 from srcData.srcGsheet import *
@@ -89,34 +90,29 @@ def processRequest(req):
             # Default Error
             else:
                 speech = random.choice(GAGAL)
-        # SNMPTN
-        elif intent == 'PendaftaranX':
-            sheet_entity_value_join = ''
-            sheet_entity_value_single = []
-            for sheet_entity_item in sheet_entity_value_split:
-                if all(element in sheet_entity_item for element in entity_value):
-                    sheet_entity_value_single.append(sheet_entity_item)
-                    sheet_entity_value_join = '.'.join(sheet_entity_item)
-            index = sheet_entity_value.index(sheet_entity_value_join)
-            speech = f"{random.choice(sheet_answer)[index]}"
-
-            # if 'snmptn' in entity_value:
-            #     index = sheet_pendaftaran_value.index('snmptn')
-            #     speech = sheet_pendaftaran_answer1[index]
-            #     if 'pengumuman' in entity_value:
-            #         index = sheet_pendaftaran_value.index('snmptnv2.pengumuman')
-            #         speech = random.choice(answer)[index]
-            #     else:
-            #         speech: "Test baen"
-            # else:
-            #     speech = "Yah apa aja"
         
-        # SBMPTN
-        # SM-Prestasi
-        # SM
-        # Pascasarjana
+        # For normally answer
+        elif intent.lower() in sheet_entity_intent:
+            # Filter list based on len of each elemen
+            sheet_value_filter = []
+            for elemen in sheet_entity_value_split:
+                if len(elemen) == len(entity_value):
+                    sheet_value_filter.append(elemen)
+
+            # List permutation
+            entity_value_permutation = permutations(entity_value)
+
+            # Find same data
+            for elemen in entity_value_permutation:
+                if list(elemen) in sheet_value_filter:
+                    index = sheet_entity_value_split.index(list(elemen))
+                    break
+
+            speech = random.choice(sheet_answer)[index]
+
         else:
-            speech = random.choice(GAGAL)
+            # speech = random.choice(GAGAL)
+            speech = f"Respon Gagal {intent} {sheet_entity_intent}"
     except:
         speech = "Mohon maaf, pertanyaan anda belum bisa saya pahami atau data tidak ada dalam sistem. Coba dengan pertanyaan lain"
     res = results(speech)
