@@ -1,5 +1,5 @@
 # UNYSA - UNY Smart Assistant
-UNYSA adalah chatbot atau virtual assistant yang digunakan untuk membantu hubungan masyarakat UNY menjawab beberapa pertanyaan dasar yang sering ditanyakan pengguna.
+UNYSA adalah chatbot atau virtual assistant yang digunakan untuk membantu peran hubungan masyarakat UNY menjawab beberapa pertanyaan dasar yang sering ditanyakan publik melalui berbagai macam kanal komunikasi dan informasi.
 
 # Teknologi yang digunakan
 - Dialogflow
