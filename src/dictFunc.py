@@ -37,7 +37,6 @@ def gsheet_filter(entity_value,gsheet_split):
 Get Answer
 """
 def gsheet_answer(entity_value,gsheet_split,gsheet_filter,gsheet_list_answer):
-    result = ''
     for item in permutations(entity_value):
         if list(item) in gsheet_filter:
             index = gsheet_split.index(list(item))
@@ -56,13 +55,3 @@ def gsheet_all(entity_value,gsheet_entity_value,gsheet_list_answer):
     result_filter = gsheet_filter(entity_value,result_split)
     speech = gsheet_answer(entity_value,result_split,result_filter,gsheet_list_answer)
     return speech
-
-"""
-Store Data as List
-"""
-def convert_temp(tempData):
-    storeData = []
-    for i in tempData:
-        for j in i:
-            storeData.append(j)
-    return storeData

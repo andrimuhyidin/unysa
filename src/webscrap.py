@@ -1,4 +1,3 @@
-from .dictFunc import *
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
@@ -6,6 +5,17 @@ import pandas as pd
 """
 Source: PDPT UNY
 """
+
+"""
+Store temp data as List
+"""
+def convert_temp(tempData):
+    storeData = []
+    for i in tempData:
+        for j in i:
+            storeData.append(j)
+    return storeData
+    
 class scrap_pdpt:
     temp_fakultas = []
     temp_prodi = []
@@ -26,7 +36,7 @@ class scrap_pdpt:
         temp_fakultas.append(df_fakultas)
         temp_prodi.append(df_prodi)
         temp_akreditasi.append(df_akreditasi)
-
+        
     fakultas = convert_temp(temp_fakultas)
     prodi = convert_temp(temp_prodi)
     akreditasi = convert_temp(temp_akreditasi)
@@ -94,10 +104,11 @@ class scrap_ukt:
         j = f"{ukt_prodi[i]} - {ukt_jenjang[i]}"
         ukt_prodi_jenjang.append(j)
 
-class scrap_beasiswa:
-    url = requests.get('http://pmb.uny.ac.id/beasiswa')
-    soup = BeautifulSoup(url.content, 'html.parser')
-    listBeasiswa = soup.find('div',{'property':'schema:text'}).find_all('li')
-    dataBeasiswa = []
-    for tag in listBeasiswa:
-        dataBeasiswa.append(tag.text)
+# Temporary Disable
+# class scrap_beasiswa:
+#     url = requests.get('http://pmb.uny.ac.id/beasiswa')
+#     soup = BeautifulSoup(url.content, 'html.parser')
+#     listBeasiswa = soup.find('div',{'property':'schema:text'}).find_all('li')
+#     dataBeasiswa = []
+#     for tag in listBeasiswa:
+#         dataBeasiswa.append(tag.text)
