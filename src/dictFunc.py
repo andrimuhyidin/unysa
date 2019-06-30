@@ -1,7 +1,10 @@
 """
 README
 """
+# Importing random tools module
 import random
+
+# Import module permutations
 from itertools import permutations
 
 """
