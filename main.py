@@ -6,7 +6,7 @@ from processReq import *
 
 # Define the place of webhook (module name)
 app = Flask(__name__)
-@app.route('/webhook', methods=['POST'])
+@app.route('/webhook', methods=['GET','POST'])
 
 # Create webhook module to POST the json type data
 def webhook():
