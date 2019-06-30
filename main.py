@@ -18,5 +18,5 @@ def webhook():
     return r
 
 # Running main module in this file
-# if __name__ == "__main__":
-app.run()
+if __name__ == "__main__":
+    app.run()
