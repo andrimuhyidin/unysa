@@ -3,6 +3,7 @@ UNYSA adalah chatbot atau virtual assistant yang digunakan untuk membantu peran 
 
 # Teknologi yang digunakan
 - Dialogflow
+- Flask
 - Python 3
 - Google Sheet API
 - Web Srapping BeautifulSoup
