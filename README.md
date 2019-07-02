@@ -22,3 +22,4 @@ Tujuan: Meminta akses untuk melihat struktur data tabel
 # GCP
 - App Engine
 - Cloud Repository
+- CI/CD Github
