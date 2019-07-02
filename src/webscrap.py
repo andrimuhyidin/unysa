@@ -111,7 +111,7 @@ class scrap_ukt:
         }
 
         # Temporary (Nested List)
-        for i in range(1,8):
+        for i in range(1,9):
             temp_ukt[i].append(df_ukt[i])
 
     # Convert prodi list to one list
