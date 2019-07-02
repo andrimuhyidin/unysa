@@ -18,3 +18,7 @@ UNYSA adalah chatbot atau virtual assistant yang digunakan untuk membantu peran 
 Tujuan: Meminta akses untuk melihat struktur data tabel
 - Kunjungi link https://docs.google.com/spreadsheets/d/1gsMdyQqClto8t6rpLwxEirwghkMgalq_2rm2zUoK_bw/edit#gid=0
 - Tunggu hingga di approve
+
+# GCP
+- App Engine
+- Cloud Repository
