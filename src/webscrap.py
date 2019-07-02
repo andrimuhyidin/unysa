@@ -140,7 +140,6 @@ class scrap_ukt:
         j = f"{ukt_prodi[i]} - {ukt_jenjang[i]}"
         ukt_prodi_jenjang.append(j)
 
-print(scrap_ukt.ukt_prodi_jenjang)
 # Temporary Disable
 # class scrap_beasiswa:
 #     url = requests.get('http://pmb.uny.ac.id/beasiswa')
