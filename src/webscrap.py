@@ -111,7 +111,7 @@ class scrap_ukt:
         }
 
         # Temporary (Nested List)
-        for i in range(1,9):
+        for i in range(1,8):
             temp_ukt[i].append(df_ukt[i])
 
     # Convert prodi list to one list
@@ -129,7 +129,7 @@ class scrap_ukt:
 
     # Append to one list of UKT value
     ukt_nilai = {1:[],2:[],3:[],4:[],5:[],6:[],7:[]}
-    for i in range(1,9):
+    for i in range(1,8):
         for j in temp_ukt[i]:
             for k in j:
                 ukt_nilai[i].append(k)
@@ -140,6 +140,7 @@ class scrap_ukt:
         j = f"{ukt_prodi[i]} - {ukt_jenjang[i]}"
         ukt_prodi_jenjang.append(j)
 
+print(scrap_ukt.ukt_prodi_jenjang)
 # Temporary Disable
 # class scrap_beasiswa:
 #     url = requests.get('http://pmb.uny.ac.id/beasiswa')
