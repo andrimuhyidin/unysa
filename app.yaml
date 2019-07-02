@@ -1,4 +1,4 @@
 runtime: python37
 handlers:
-- url: auto
+- url: /
   script: main.app
