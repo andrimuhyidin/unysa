@@ -129,7 +129,7 @@ class scrap_ukt:
 
     # Append to one list of UKT value
     ukt_nilai = {1:[],2:[],3:[],4:[],5:[],6:[],7:[]}
-    for i in range(1,9):
+    for i in range(1,8):
         for j in temp_ukt[i]:
             for k in j:
                 ukt_nilai[i].append(k)
